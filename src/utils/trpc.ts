@@ -43,3 +43,4 @@ export const trpc = createTRPCNext<AppRouter>({
   ssr: false,
 });
 // => { useQuery: ..., useMutation: ...}
+
