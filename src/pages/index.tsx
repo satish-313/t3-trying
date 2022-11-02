@@ -9,13 +9,26 @@ const btn =
 
 const Home: NextPage = () => {
   const [ids, setIds] = useState(() => getOptionsForVote());
-  const [first, second] = ids;
+  const [first, second] = ids;    
+  const voteMutation = trpc.castVote.useMutation();
   const pokemon1 = trpc.getPokemonById.useQuery({ id: first });
   const pokemon2 = trpc.getPokemonById.useQuery({ id: second });
 
   if (pokemon1.isLoading || pokemon2.isLoading) return null;
 
   const voteForRoundest = (selected: number) => {
+
+    if (selected === first) {
+      voteMutation.mutate({
+        votedFor: first,
+        votedAgainst: second,
+      });
+    } else {
+      voteMutation.mutate({
+        votedFor: second,
+        votedAgainst: first,
+      });
+    }
     setIds(getOptionsForVote());
   };
 
@@ -47,7 +60,7 @@ const Home: NextPage = () => {
 
 export default Home;
 
-const PokemonListing: React.FC<{ pokemon:any ; vote: () => void }> = ({
+const PokemonListing: React.FC<{ pokemon: any; vote: () => void }> = ({
   pokemon,
   vote,
 }) => {
